@@ -6,12 +6,21 @@
 
 | ファイル | 内容 |
 |---|---|
-| [`docs/workspace-separation.md`](docs/workspace-separation.md) | 設計・運用ルール・GitHub Organization の分離手順 |
-| [`scripts/setup-workspace.sh`](scripts/setup-workspace.sh) | Mac 上で実行するセットアップスクリプト |
+| [`docs/workspace-separation.md`](docs/workspace-separation.md) | 設計・SharePoint 実構造・移行マッピング・GitHub Organization の分離手順 |
+| [`scripts/setup-workspace.sh`](scripts/setup-workspace.sh) | ワークスペース分離のセットアップ |
+| [`scripts/migrate-drive-to-sharepoint.sh`](scripts/migrate-drive-to-sharepoint.sh) | Google Drive にしかない資料を SharePoint へ移行 |
 
 ```bash
-bash scripts/setup-workspace.sh --dry-run   # 確認（何も作成しない）
-bash scripts/setup-workspace.sh             # 実行
+# 1. ワークスペースの分離
+bash scripts/setup-workspace.sh --show-sync   # 同期フォルダの実物を確認
+bash scripts/setup-workspace.sh --dry-run     # 確認（何も作成しない）
+bash scripts/setup-workspace.sh               # 実行
+
+# 2. Google Drive から SharePoint への移行
+bash scripts/migrate-drive-to-sharepoint.sh --dry-run   # 確認（コピーしない）
+bash scripts/migrate-drive-to-sharepoint.sh             # 実行
 ```
 
-スクリプトは既存ファイルの移動・削除・上書きを一切行わず、何度実行しても同じ結果になる。
+どちらのスクリプトも既存ファイルの移動・削除・上書きを一切行わず、
+何度実行しても同じ結果になる（冪等）。
+移行スクリプトは Google Drive 側を変更しない。
