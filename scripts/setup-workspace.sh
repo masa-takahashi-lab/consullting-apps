@@ -150,17 +150,28 @@ show_sync_inventory() {
 
     case "${base}" in
       OneDrive-SharedLibraries-*)
-        printf '  %s%s%s  %s(SharePoint ライブラリ / 法人)%s\n' \
-          "${C_BOLD}" "${base}" "${C_RESET}" "${C_DIM}" "${C_RESET}"
+        printf '  %s%s%s  %s(SharePoint ライブラリ「同期」/ 法人)%s\n' \
+          "${C_BOLD}" "${base}" "${C_RESET}" "${C_YELLOW}" "${C_RESET}"
         local lib
         for lib in "${d}"/*; do
           [ -d "${lib}" ] || continue
           printf '      %s\n' "$(basename "${lib}")"
         done
+        warn "運用ルールは「同期」ではなく「OneDrive へのショートカットの追加」を指定しています。"
+        info "（フォルダ構成と運用ルール 第4版 / 連絡事項）"
+        info "PC の容量を消費するため、可能ならショートカット方式へ切り替えてください。"
         ;;
       OneDrive-*)
         printf '  %s%s%s  %s(OneDrive / 法人)%s\n' \
           "${C_BOLD}" "${base}" "${C_RESET}" "${C_DIM}" "${C_RESET}"
+        # 運用ルールが指定する「ショートカットの追加」方式では、
+        # SharePoint の各チャネルがこの配下にショートカットとして並ぶ。
+        local sc
+        for sc in "${d}"/*; do
+          [ -e "${sc}" ] || continue
+          [ -d "${sc}" ] || continue
+          printf '      %s\n' "$(basename "${sc}")"
+        done
         ;;
       GoogleDrive-*)
         printf '  %s%s%s  %s(Google Drive / 個人)%s\n' \
@@ -319,11 +330,21 @@ writef "${PERSONAL_ROOT}/README.md" "# 個人事業ワークスペース
 
     ${PERSONAL_NAME} <${PERSONAL_EMAIL}>
 
-## 滝川市案件について
+## 滝川市案件について（要確認）
 
 Google Drive の \`滝川市向け資料\` は **参照用の複製であり正ではない**。
-正は法人 SharePoint 側。更新は必ず SharePoint に対して行い、
-こちらのコピーは編集しないこと。
+正は法人 SharePoint 側（プライベートチャネル 100_滝川市）。
+更新は必ず SharePoint に対して行い、こちらのコピーは編集しないこと。
+
+### ただし、この複製は自社規程に抵触している
+
+社内文書「フォルダ構成と運用ルール 第4版」の運用ルールに次の定めがある。
+
+> **二重管理の禁止** — Google Drive へのリンク貼付は行わない。
+> SharePoint を唯一の正とする（文書管理規程 第3条）
+
+つまり個人 Drive にコピーを残す運用は、暫定措置としても規程違反にあたる。
+早期に解消し、SharePoint へ一本化すること。
 "
 
 # ---------------------------------------------------------------------------
